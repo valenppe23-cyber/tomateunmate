@@ -875,6 +875,7 @@ footer a:hover { text-decoration: underline; opacity: 0.8; }
     <span style="color:#aaa; font-size:0.8rem;">Hacé clic en cualquier texto o precio para editar</span>
   </div>
   <div class="admin-bar-right">
+    <button class="admin-btn admin-btn-add" onclick="triggerHeroBgUpload()">🖼️ Cambiar fondo</button>
     <button class="admin-btn admin-btn-add" onclick="openAddComboModal()">+ Agregar combo</button>
     <button class="admin-btn admin-btn-add" onclick="openAddPrecioModal()" style="background:#8b6914">+ Agregar producto</button>
     <button class="admin-btn admin-btn-save" onclick="saveData()">💾 Guardar cambios</button>
@@ -1103,6 +1104,7 @@ let editingImgTarget = null; // { type: 'combo'|'gallery', index }
 // Datos default
 const defaultData = {
   logoImg: null,
+  heroBgImg: null,
   waNumber: '5492355555555',
   combos: [
     { nombre: 'Combo Básico', desc: 'Mate + yerba + bombilla. Todo lo que necesitás para empezar el día con energía.', precio: '3.500', unidad: '/ unidad', color: 'verde', emoji: '🧉', nuevo: false, img: null },
@@ -1135,6 +1137,7 @@ function loadData() {
     }
   } catch(e) {}
   renderLogo();
+  renderHeroBg();
 }
 
 function saveData() {
@@ -1181,6 +1184,7 @@ function collectEditableFields() {
 // ====================================
 function renderAll() {
   renderLogo();
+  renderHeroBg();
   renderCombos();
   renderPrecios();
   renderGallery();
@@ -1194,6 +1198,17 @@ function renderLogo() {
     logoImg.style.display = 'inline-block';
   } else {
     logoImg.style.display = 'none';
+  }
+}
+
+function renderHeroBg() {
+  const hero = document.querySelector('.hero');
+  if (data.heroBgImg) {
+    hero.style.backgroundImage = `url('${data.heroBgImg}'), linear-gradient(135deg, var(--verde) 0%, var(--verde-oscuro) 55%, var(--marron) 100%)`;
+    hero.style.backgroundSize = 'cover';
+    hero.style.backgroundPosition = 'center';
+  } else {
+    hero.style.backgroundImage = 'linear-gradient(135deg, var(--verde) 0%, var(--verde-oscuro) 55%, var(--marron) 100%)';
   }
 }
 
@@ -1214,14 +1229,14 @@ function renderCombos() {
         ${c.nuevo ? '<div class="badge-nuevo">Nuevo</div>' : ''}
       </div>
       <div class="combo-body">
-        <span class="combo-title editable-field" contenteditable="${isAdmin}" spellcheck="false">${c.nombre}</span>
-        <span class="combo-desc editable-field" contenteditable="${isAdmin}" spellcheck="false" style="margin-top:0.4rem">${c.desc}</span>
+        <span class="combo-title editable-field" contenteditable="false" spellcheck="false">${c.nombre}</span>
+        <span class="combo-desc editable-field" contenteditable="false" spellcheck="false" style="margin-top:0.4rem">${c.desc}</span>
       </div>
       <div class="combo-footer">
         <div class="price-wrapper">
           <span class="price-symbol">$</span>
-          <span class="price-amount editable-field" contenteditable="${isAdmin}" spellcheck="false">${c.precio}</span>
-          <span class="price-label editable-field" contenteditable="${isAdmin}" spellcheck="false">${c.unidad}</span>
+          <span class="price-amount editable-field" contenteditable="false" spellcheck="false">${c.precio}</span>
+          <span class="price-label editable-field" contenteditable="false" spellcheck="false">${c.unidad}</span>
         </div>
         <a class="btn-pedir" href="https://wa.me/${data.waNumber}?text=Hola!%20Quiero%20el%20${encodeURIComponent(c.nombre)}%20🧉" target="_blank">Pedir</a>
       </div>
@@ -1252,10 +1267,10 @@ function renderPrecios() {
     item.innerHTML = `
       ${imgHtml}
       <button class="btn-delete-precio" onclick="deletePrecio(${i})" title="Eliminar">✕</button>
-      <span class="precio-emoji editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.emoji}</span>
-      <span class="precio-nombre editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.nombre}</span>
-      <span class="precio-desc editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.desc}</span>
-      <span class="precio-monto editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.monto}</span>
+      <span class="precio-emoji editable-field" contenteditable="false" spellcheck="false">${p.emoji}</span>
+      <span class="precio-nombre editable-field" contenteditable="false" spellcheck="false">${p.nombre}</span>
+      <span class="precio-desc editable-field" contenteditable="false" spellcheck="false">${p.desc}</span>
+      <span class="precio-monto editable-field" contenteditable="false" spellcheck="false">${p.monto}</span>
     `;
     grid.appendChild(item);
   });
@@ -1353,6 +1368,11 @@ function enterAdmin() {
     h2.spellcheck = false;
   });
   
+  // Make all editable fields editable
+  document.querySelectorAll('.editable-field').forEach(el => {
+    el.contentEditable = 'true';
+  });
+  
   renderAll();
   showToast('🛠 Modo edición activado — hacé clic en cualquier texto para editar', 'info');
 
@@ -1365,9 +1385,14 @@ function enterAdmin() {
 function exitAdmin() {
   collectEditableFields();
   
-  // Make section titles non-editable
-  document.querySelectorAll('.section-title h2').forEach(h2 => {
-    h2.contentEditable = 'false';
+  // Disable all contenteditable
+  document.querySelectorAll('[contenteditable="true"]').forEach(el => {
+    el.contentEditable = 'false';
+  });
+  
+  // Explicitly disable editable-field elements
+  document.querySelectorAll('.editable-field').forEach(el => {
+    el.contentEditable = 'false';
   });
   
   isAdmin = false;
@@ -1528,6 +1553,12 @@ function triggerLogoUpload() {
   document.getElementById('hidden-file-input').click();
 }
 
+function triggerHeroBgUpload() {
+  if (!isAdmin) return;
+  editingImgTarget = { type: 'hero-bg' };
+  document.getElementById('hidden-file-input').click();
+}
+
 document.getElementById('hidden-file-input').addEventListener('change', function() {
   const file = this.files[0];
   if (!file) return;
@@ -1563,6 +1594,10 @@ document.getElementById('hidden-file-input').addEventListener('change', function
       document.getElementById('np-img-preview').src = dataUrl;
       document.getElementById('np-img-preview').style.display = 'block';
       showToast('📸 Imagen agregada', 'success');
+    } else if (editingImgTarget.type === 'hero-bg') {
+      data.heroBgImg = dataUrl;
+      renderHeroBg();
+      showToast('🖼️ Fondo actualizado', 'success');
     }
     editingImgTarget = null;
   };
