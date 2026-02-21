@@ -1260,9 +1260,9 @@ function renderPrecios() {
     item.className = 'precio-item';
     let imgHtml = '';
     if (p.img) {
-      imgHtml = `<img src="${p.img}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:0.5rem;display:block;cursor:${isAdmin?'pointer':'default'}" onclick="if(isAdmin) triggerProductImgUpload(${i})" alt="${p.nombre}">`;
+      imgHtml = `<img src="${c.img}" style="width:100%;height:180px;object-fit:cover;border-radius:12px;margin-bottom:0.5rem;display:block;cursor:${isAdmin?'pointer':'default'}" onclick="if(isAdmin) triggerComboImgUpload(${i})" alt="${c.nombre}">`;
     } else if (isAdmin) {
-      imgHtml = `<div style="width:100%;height:120px;background:rgba(249,115,22,0.1);border:2px dashed rgba(249,115,22,0.5);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.5rem;cursor:pointer;font-size:2rem" onclick="triggerProductImgUpload(${i})">📷</div>`;
+      imgHtml = `<div style="width:100%;height:180px;background:rgba(249,115,22,0.1);border:2px dashed rgba(249,115,22,0.5);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:0.5rem;cursor:pointer;font-size:2rem" onclick="triggerComboImgUpload(${i})">📷</div>`;
     }
     item.innerHTML = `
       ${imgHtml}
