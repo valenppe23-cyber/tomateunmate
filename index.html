@@ -590,8 +590,19 @@ footer .footer-logo {
 }
 
 footer p { font-size: 0.88rem; line-height: 2; }
-footer a { color: var(--dorado); text-decoration: none; }
-footer a:hover { text-decoration: underline; }
+footer a { color: var(--dorado); text-decoration: none; cursor: pointer; transition: opacity 0.2s; }
+footer a:hover { text-decoration: underline; opacity: 0.8; }
+
+/* Admin link in footer */
+.footer-admin-link {
+  color: var(--dorado);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+.footer-admin-link:hover { opacity: 0.7; }
 
 /* Admin secret trigger */
 .footer-admin-trigger {
@@ -889,7 +900,7 @@ footer a:hover { text-decoration: underline; }
     <a id="wa-footer-link" href="#">WhatsApp</a> &nbsp;•&nbsp;
     <a href="https://www.instagram.com/tomate_unmate.tl/" target="_blank">Instagram</a>
   </p>
-  <p style="margin-top: 2rem; font-size: 0.75rem; opacity: 0.4;">© 2025 Tomate un Mate. Todos los derechos reservados.</p>
+  <p style="margin-top: 2rem; font-size: 0.75rem; opacity: 0.4;">© 2025 Tomate un Mate. Todos los derechos reservados. &nbsp;•&nbsp; <a class="footer-admin-link" onclick="openModal('modal-login')" title="Acceso de administrador">Administrador</a></p>
   <!-- Secret admin trigger: click 5 times -->
   <span class="footer-admin-trigger" id="secret-trigger" title="">·</span>
 </footer>
