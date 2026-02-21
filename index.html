@@ -578,6 +578,21 @@ body.admin-mode .btn-delete-precio { display: flex; }
 
 .insta-item:hover { transform: scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
 
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.insta-item {
+  animation: slideInFromRight 0.8s ease-out;
+}
+
 body.admin-mode .insta-item::after {
   content: '📷';
   position: absolute;
@@ -861,7 +876,7 @@ footer a:hover { text-decoration: underline; opacity: 0.8; }
   </div>
   <div class="admin-bar-right">
     <button class="admin-btn admin-btn-add" onclick="openAddComboModal()">+ Agregar combo</button>
-    <button class="admin-btn admin-btn-add" onclick="openAddPrecioModal()" style="background:#8b6914">+ Agregar precio</button>
+    <button class="admin-btn admin-btn-add" onclick="openAddPrecioModal()" style="background:#8b6914">+ Agregar producto</button>
     <button class="admin-btn admin-btn-save" onclick="saveData()">💾 Guardar cambios</button>
     <button class="admin-btn admin-btn-exit" onclick="exitAdmin()">✕ Salir</button>
   </div>
@@ -1025,11 +1040,11 @@ footer a:hover { text-decoration: underline; opacity: 0.8; }
   </div>
 </div>
 
-<!-- ============ MODAL: AGREGAR PRECIO ============ -->
+<!-- ============ MODAL: AGREGAR PRODUCTO ============ -->
 <div class="modal-overlay" id="modal-add-precio">
   <div class="modal-box" style="position:relative; max-width:400px; text-align:left;">
     <button class="modal-close" onclick="closeModal('modal-add-precio')">✕</button>
-    <h3 style="text-align:center; margin-bottom:1.5rem;">➕ Nuevo precio</h3>
+    <h3 style="text-align:center; margin-bottom:1.5rem;">➕ Nuevo producto</h3>
     <div class="modal-form-grid">
       <div>
         <label class="modal-label">Emoji</label>
@@ -1044,8 +1059,13 @@ footer a:hover { text-decoration: underline; opacity: 0.8; }
         <input type="text" class="modal-input-left" id="np-desc" placeholder="Ej: Artesanal">
       </div>
       <div>
-        <label class="modal-label">Precio (en $)</label>
+        <label class="modal-label\">Precio (en $)</label>
         <input type="number" class="modal-input-left" id="np-precio" placeholder="Ej: 2000">
+      </div>
+      <div>
+        <label class="modal-label">Imagen (opcional)</label>
+        <button type="button" class="modal-btn" style="font-size:0.9rem;background:#666" onclick="triggerProductImg()">📷 Subir imagen</button>
+        <img id="np-img-preview" style="width:100%;max-width:150px;margin-top:8px;border-radius:8px;display:none">
       </div>
     </div>
     <button class="modal-btn" onclick="addPrecio()">Agregar producto</button>
@@ -1090,10 +1110,10 @@ const defaultData = {
     { nombre: 'Combo Regalo', desc: 'Presentación especial para regalo. Incluye mate, yerba seleccionada, bombilla y caja decorada.', precio: '9.500', unidad: '/ kit', color: 'dorado', emoji: '🎁', nuevo: false, img: null },
   ],
   precios: [
-    { emoji: '🧉', nombre: 'Mate solo', desc: 'Mate artesanal', monto: '$2.000' },
-    { emoji: '💨', nombre: 'Bombilla', desc: 'Acero inoxidable', monto: '$1.800' },
-    { emoji: '🌿', nombre: 'Yerba 500g', desc: 'Yerba seleccionada', monto: '$1.200' },
-    { emoji: '🛍️', nombre: 'Funda', desc: 'Protección para mate', monto: '$1.500' },
+    { emoji: '🧉', nombre: 'Mate solo', desc: 'Mate artesanal', monto: '$2.000', img: null },
+    { emoji: '💨', nombre: 'Bombilla', desc: 'Acero inoxidable', monto: '$1.800', img: null },
+    { emoji: '🌿', nombre: 'Yerba 500g', desc: 'Yerba seleccionada', monto: '$1.200', img: null },
+    { emoji: '🛍️', nombre: 'Funda', desc: 'Protección para mate', monto: '$1.500', img: null },
   ],
   gallery: ['🧉','🌿','🎁','☀️','🤝','✨'],
   galleryImgs: [null, null, null, null, null, null],
@@ -1223,7 +1243,14 @@ function renderPrecios() {
   data.precios.forEach((p, i) => {
     const item = document.createElement('div');
     item.className = 'precio-item';
+    let imgHtml = '';
+    if (p.img) {
+      imgHtml = `<img src="${p.img}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;margin-bottom:0.5rem;display:block;cursor:${isAdmin?'pointer':'default'}" onclick="if(isAdmin) triggerProductImgUpload(${i})" alt="${p.nombre}">`;
+    } else if (isAdmin) {
+      imgHtml = `<div style="width:100%;height:120px;background:rgba(249,115,22,0.1);border:2px dashed rgba(249,115,22,0.5);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:0.5rem;cursor:pointer;font-size:2rem" onclick="triggerProductImgUpload(${i})">📷</div>`;
+    }
     item.innerHTML = `
+      ${imgHtml}
       <button class="btn-delete-precio" onclick="deletePrecio(${i})" title="Eliminar">✕</button>
       <span class="precio-emoji editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.emoji}</span>
       <span class="precio-nombre editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.nombre}</span>
@@ -1255,9 +1282,38 @@ function renderGallery() {
     } else {
       item.textContent = g;
     }
-    item.onclick = () => { if (isAdmin) triggerImgUpload('gallery', i); };
+    item.onclick = () => { 
+      if (isAdmin) {
+        triggerImgUpload('gallery', i);
+      } else {
+        window.open('https://www.instagram.com/tomate_unmate.tl/', '_blank');
+      }
+    };
     grid.insertBefore(item, addBtn);
   });
+  
+  // Iniciar carrusel automático
+  startCarousel();
+}
+
+let carouselIndex = 0;
+let carouselInterval;
+
+function startCarousel() {
+  clearInterval(carouselInterval);
+  const grid = document.getElementById('insta-grid');
+  const items = Array.from(grid.querySelectorAll('.insta-item')).filter(item => !item.classList.contains('insta-add-btn'));
+  
+  if (items.length <= 1) return;
+  
+  carouselInterval = setInterval(() => {
+    carouselIndex = (carouselIndex + 1) % items.length;
+    const scrollLeft = items[carouselIndex].offsetLeft - grid.offsetLeft;
+    grid.scrollTo({
+      left: scrollLeft - 80,
+      behavior: 'smooth'
+    });
+  }, 4000); // Cambiar cada 4 segundos
 }
 
 function updateWaLinks() {
@@ -1398,22 +1454,38 @@ function toggleNuevo(i) {
   renderCombos();
 }
 
+let productImgData = null;
+
+function triggerProductImg() {
+  editingImgTarget = { type: 'product-modal' };
+  document.getElementById('hidden-file-input').click();
+}
+
+function triggerProductImgUpload(index) {
+  if (!isAdmin) return;
+  editingImgTarget = { type: 'product', index };
+  document.getElementById('hidden-file-input').click();
+}
+
 function addPrecio() {
   const emoji = document.getElementById('np-emoji').value.trim() || '🧉';
   const nombre = document.getElementById('np-nombre').value.trim();
   const desc = document.getElementById('np-desc').value.trim();
   const precio = document.getElementById('np-precio').value.trim();
+  const img = productImgData;
 
   if (!nombre || !precio) {
     showToast('⚠️ Completá nombre y precio', 'info');
     return;
   }
 
-  data.precios.push({ emoji, nombre, desc, monto: '$' + Number(precio).toLocaleString('es-AR') });
+  data.precios.push({ emoji, nombre, desc, monto: '$' + Number(precio).toLocaleString('es-AR'), img });
   closeModal('modal-add-precio');
   renderPrecios();
-  showToast('✅ Precio agregado', 'success');
+  showToast('✅ Producto agregado', 'success');
   ['np-emoji','np-nombre','np-desc','np-precio'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('np-img-preview').style.display = 'none';
+  productImgData = null;
 }
 
 function deletePrecio(i) {
@@ -1482,6 +1554,15 @@ document.getElementById('hidden-file-input').addEventListener('change', function
       data.logoImg = dataUrl;
       renderLogo();
       showToast('📸 Logo actualizado', 'success');
+    } else if (editingImgTarget.type === 'product') {
+      data.precios[editingImgTarget.index].img = dataUrl;
+      renderPrecios();
+      showToast('📸 Imagen del producto actualizada', 'success');
+    } else if (editingImgTarget.type === 'product-modal') {
+      productImgData = dataUrl;
+      document.getElementById('np-img-preview').src = dataUrl;
+      document.getElementById('np-img-preview').style.display = 'block';
+      showToast('📸 Imagen agregada', 'success');
     }
     editingImgTarget = null;
   };
