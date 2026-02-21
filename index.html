@@ -79,6 +79,29 @@ body {
 .admin-btn-exit { background: #444; color: white; }
 .admin-btn-exit:hover { background: #666; }
 
+/* ========== LOGO EDITABLE ========== */
+.logo-img {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  margin-right: 10px;
+  vertical-align: middle;
+  border-radius: 4px;
+  cursor: default;
+  transition: opacity 0.2s, box-shadow 0.2s;
+}
+
+body.admin-mode .logo-img {
+  cursor: pointer;
+  opacity: 0.7;
+  box-shadow: 0 0 0 2px var(--admin-accent);
+}
+
+body.admin-mode .logo-img:hover {
+  opacity: 1;
+  box-shadow: 0 0 0 3px var(--admin-accent);
+}
+
 /* ========== HEADER ========== */
 header {
   background: var(--verde);
@@ -206,6 +229,22 @@ section { padding: 5rem 2rem; }
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   color: var(--verde);
   margin-bottom: 0.5rem;
+  display: block;
+  outline: none;
+  border-radius: 6px;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+body.admin-mode .section-title h2 {
+  cursor: text;
+  background: rgba(249,115,22,0.07);
+  box-shadow: 0 0 0 1px rgba(249,115,22,0.25);
+  padding: 4px 8px;
+}
+
+body.admin-mode .section-title h2:focus {
+  background: rgba(249,115,22,0.12);
+  box-shadow: 0 0 0 2px var(--admin-accent);
 }
 .section-title p { color: var(--marron); font-size: 0.95rem; }
 
@@ -831,16 +870,8 @@ footer a:hover { text-decoration: underline; opacity: 0.8; }
 <!-- ============ HEADER ============ -->
 <header id="main-header">
   <div class="logo">
-    <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;margin-right:10px;vertical-align:middle;">
-      <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="3.5"/>
-      <path d="M 12 50 Q 50 85 88 50" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
-      <ellipse cx="50" cy="54" rx="16" ry="20" fill="currentColor" opacity="0.85"/>
-      <line x1="50" y1="36" x2="54" y2="14" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"/>
-      <circle cx="54" cy="14" r="2.2" fill="currentColor"/>
-      <path d="M 26 42 Q 21 37 19 28 Q 18 25 20 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M 23 40 Q 17 34 14 26" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-    </svg>
-    Tomate un <span>Mate</span>
+    <img id="logo-img" class="logo-img" src="" alt="Logo" onclick="if(isAdmin) triggerLogoUpload()">
+    <span id="logo-text">Tomate un <span>Mate</span></span>
   </div>
   <nav>
     <a href="#combos">Combos</a>
@@ -1051,6 +1082,7 @@ let editingImgTarget = null; // { type: 'combo'|'gallery', index }
 
 // Datos default
 const defaultData = {
+  logoImg: null,
   waNumber: '5492355555555',
   combos: [
     { nombre: 'Combo Básico', desc: 'Mate + yerba + bombilla. Todo lo que necesitás para empezar el día con energía.', precio: '3.500', unidad: '/ unidad', color: 'verde', emoji: '🧉', nuevo: false, img: null },
@@ -1082,6 +1114,7 @@ function loadData() {
       while (data.galleryImgs.length < data.gallery.length) data.galleryImgs.push(null);
     }
   } catch(e) {}
+  renderLogo();
 }
 
 function saveData() {
@@ -1127,10 +1160,21 @@ function collectEditableFields() {
 // RENDER
 // ====================================
 function renderAll() {
+  renderLogo();
   renderCombos();
   renderPrecios();
   renderGallery();
   updateWaLinks();
+}
+
+function renderLogo() {
+  const logoImg = document.getElementById('logo-img');
+  if (data.logoImg) {
+    logoImg.src = data.logoImg;
+    logoImg.style.display = 'inline-block';
+  } else {
+    logoImg.style.display = 'none';
+  }
 }
 
 function renderCombos() {
@@ -1246,6 +1290,13 @@ function enterAdmin() {
   document.body.classList.add('admin-mode');
   document.getElementById('admin-bar').classList.add('visible');
   document.getElementById('main-header').classList.add('with-admin');
+  
+  // Make section titles editable
+  document.querySelectorAll('.section-title h2').forEach(h2 => {
+    h2.contentEditable = 'true';
+    h2.spellcheck = false;
+  });
+  
   renderAll();
   showToast('🛠 Modo edición activado — hacé clic en cualquier texto para editar', 'info');
 
@@ -1257,6 +1308,12 @@ function enterAdmin() {
 
 function exitAdmin() {
   collectEditableFields();
+  
+  // Make section titles non-editable
+  document.querySelectorAll('.section-title h2').forEach(h2 => {
+    h2.contentEditable = 'false';
+  });
+  
   isAdmin = false;
   document.body.classList.remove('admin-mode');
   document.getElementById('admin-bar').classList.remove('visible');
@@ -1393,6 +1450,12 @@ function triggerImgUpload(type, index) {
   document.getElementById('hidden-file-input').click();
 }
 
+function triggerLogoUpload() {
+  if (!isAdmin) return;
+  editingImgTarget = { type: 'logo' };
+  document.getElementById('hidden-file-input').click();
+}
+
 document.getElementById('hidden-file-input').addEventListener('change', function() {
   const file = this.files[0];
   if (!file) return;
@@ -1415,6 +1478,10 @@ document.getElementById('hidden-file-input').addEventListener('change', function
       data.galleryImgs.push(dataUrl);
       renderGallery();
       showToast('📸 Foto agregada a la galería', 'success');
+    } else if (editingImgTarget.type === 'logo') {
+      data.logoImg = dataUrl;
+      renderLogo();
+      showToast('📸 Logo actualizado', 'success');
     }
     editingImgTarget = null;
   };
