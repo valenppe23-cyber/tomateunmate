@@ -1449,13 +1449,6 @@ document.addEventListener('keydown', (e) => {
 // ====================================
 loadData();
 renderAll();
-
-// Prompt WA config on first visit
-if (!localStorage.getItem('tomate_mate_data')) {
-  setTimeout(() => {
-    if (!isAdmin) openModal('modal-login');
-  }, 1500);
-}
 </script>
 </body>
 </html>
