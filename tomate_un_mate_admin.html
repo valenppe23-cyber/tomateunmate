@@ -351,12 +351,16 @@ body.admin-mode .badge-check-wrapper { display: block; }
   border: none;
   background: transparent !important;
   padding: 2px 6px !important;
+  pointer-events: auto !important;
+  user-select: text !important;
+  -webkit-user-select: text !important;
 }
 
 body.admin-mode .editable-field {
-  cursor: text;
+  cursor: text !important;
   background: rgba(249,115,22,0.10) !important;
   box-shadow: inset 0 0 0 1px rgba(249,115,22,0.3) !important;
+  pointer-events: auto !important;
 }
 
 body.admin-mode .editable-field:focus {
@@ -371,6 +375,7 @@ body.admin-mode .editable-field:focus {
   display: block !important;
   width: 100% !important;
   font-weight: bold !important;
+  pointer-events: auto !important;
 }
 
 .combo-desc {
@@ -378,33 +383,39 @@ body.admin-mode .editable-field:focus {
   margin-top: 0.4rem !important;
   display: block !important;
   width: 100% !important;
+  pointer-events: auto !important;
 }
 
 .price-amount {
   width: 60px !important;
   font-weight: bold !important;
   color: var(--admin-accent) !important;
+  pointer-events: auto !important;
 }
 
 .price-label {
   font-size: 0.85rem !important;
+  pointer-events: auto !important;
 }
 
 .precio-emoji {
   width: 40px !important;
   font-size: 1.2rem !important;
   text-align: center !important;
+  pointer-events: auto !important;
 }
 
 .precio-nombre {
   flex: 1 !important;
   font-weight: 600 !important;
+  pointer-events: auto !important;
 }
 
 .precio-desc {
   flex: 2 !important;
   color: #666 !important;
   font-size: 0.9rem !important;
+  pointer-events: auto !important;
 }
 
 .precio-monto {
@@ -412,6 +423,7 @@ body.admin-mode .editable-field:focus {
   text-align: right !important;
   font-weight: 600 !important;
   color: var(--admin-accent) !important;
+  pointer-events: auto !important;
 }
 
 .combo-footer {
@@ -1143,36 +1155,111 @@ function renderCombos() {
   data.combos.forEach((c, i) => {
     const card = document.createElement('div');
     card.className = 'combo-card';
-    card.innerHTML = `
-      <button class="btn-delete-card" onclick="deleteCombo(${i})" title="Eliminar combo">✕</button>
-      <div class="combo-img-wrapper" onclick="triggerImgUpload('combo', ${i})">
-        <img class="combo-img${c.img ? ' loaded' : ''}" src="${c.img || ''}" alt="${c.nombre}">
-        <div class="combo-emoji-bg ${c.color}">${c.emoji}</div>
-        <div class="badge-check-wrapper">
-          <button class="badge-nuevo-toggle" onclick="event.stopPropagation(); toggleNuevo(${i})">${c.nuevo ? '✅ Nuevo' : '+ Nuevo'}</button>
-        </div>
-        ${c.nuevo ? '<div class="badge-nuevo">Nuevo</div>' : ''}
-      </div>
-      <div class="combo-body">
-        <input type="text" class="combo-title editable-field" value="${c.nombre}" data-field="nombre" data-index="${i}">
-        <input type="text" class="combo-desc editable-field" value="${c.desc}" data-field="desc" data-index="${i}">
-      </div>
-      <div class="combo-footer">
-        <div class="price-wrapper">
-          <span class="price-symbol">$</span>
-          <input type="text" class="price-amount editable-field" value="${c.precio}" data-field="precio" data-index="${i}">
-          <input type="text" class="price-label editable-field" value="${c.unidad}" data-field="unidad" data-index="${i}">
-        </div>
-        <a class="btn-pedir" href="https://wa.me/${data.waNumber}?text=Hola!%20Quiero%20el%20${encodeURIComponent(c.nombre)}%20🧉" target="_blank">Pedir</a>
-      </div>
-    `;
-    // If has image, show it properly
-    if (c.img) {
-      const imgEl = card.querySelector('.combo-img');
-      const bgEl = card.querySelector('.combo-emoji-bg');
-      imgEl.style.display = 'block';
-      bgEl.style.display = 'none';
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn-delete-card';
+    deleteBtn.title = 'Eliminar combo';
+    deleteBtn.textContent = '✕';
+    deleteBtn.setAttribute('onclick', `deleteCombo(${i})`);
+    card.appendChild(deleteBtn);
+    
+    const imgWrapper = document.createElement('div');
+    imgWrapper.className = 'combo-img-wrapper';
+    imgWrapper.setAttribute('onclick', `triggerImgUpload('combo', ${i})`);
+    
+    const img = document.createElement('img');
+    img.className = 'combo-img' + (c.img ? ' loaded' : '');
+    img.src = c.img || '';
+    img.alt = c.nombre;
+    imgWrapper.appendChild(img);
+    
+    const emojiBg = document.createElement('div');
+    emojiBg.className = `combo-emoji-bg ${c.color}`;
+    emojiBg.textContent = c.emoji;
+    imgWrapper.appendChild(emojiBg);
+    
+    const badgeWrapper = document.createElement('div');
+    badgeWrapper.className = 'badge-check-wrapper';
+    const badgeBtn = document.createElement('button');
+    badgeBtn.className = 'badge-nuevo-toggle';
+    badgeBtn.textContent = c.nuevo ? '✅ Nuevo' : '+ Nuevo';
+    badgeBtn.setAttribute('onclick', `event.stopPropagation(); toggleNuevo(${i})`);
+    badgeWrapper.appendChild(badgeBtn);
+    imgWrapper.appendChild(badgeWrapper);
+    
+    if (c.nuevo) {
+      const badge = document.createElement('div');
+      badge.className = 'badge-nuevo';
+      badge.textContent = 'Nuevo';
+      imgWrapper.appendChild(badge);
     }
+    
+    card.appendChild(imgWrapper);
+    
+    const body = document.createElement('div');
+    body.className = 'combo-body';
+    
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.className = 'combo-title editable-field';
+    titleInput.value = c.nombre;
+    titleInput.setAttribute('data-field', 'nombre');
+    titleInput.setAttribute('data-index', i);
+    body.appendChild(titleInput);
+    
+    const descInput = document.createElement('input');
+    descInput.type = 'text';
+    descInput.className = 'combo-desc editable-field';
+    descInput.value = c.desc;
+    descInput.setAttribute('data-field', 'desc');
+    descInput.setAttribute('data-index', i);
+    body.appendChild(descInput);
+    
+    card.appendChild(body);
+    
+    const footer = document.createElement('div');
+    footer.className = 'combo-footer';
+    
+    const priceWrapper = document.createElement('div');
+    priceWrapper.className = 'price-wrapper';
+    
+    const priceSymbol = document.createElement('span');
+    priceSymbol.className = 'price-symbol';
+    priceSymbol.textContent = '$';
+    priceWrapper.appendChild(priceSymbol);
+    
+    const priceInput = document.createElement('input');
+    priceInput.type = 'text';
+    priceInput.className = 'price-amount editable-field';
+    priceInput.value = c.precio;
+    priceInput.setAttribute('data-field', 'precio');
+    priceInput.setAttribute('data-index', i);
+    priceWrapper.appendChild(priceInput);
+    
+    const unitInput = document.createElement('input');
+    unitInput.type = 'text';
+    unitInput.className = 'price-label editable-field';
+    unitInput.value = c.unidad;
+    unitInput.setAttribute('data-field', 'unidad');
+    unitInput.setAttribute('data-index', i);
+    priceWrapper.appendChild(unitInput);
+    
+    footer.appendChild(priceWrapper);
+    
+    const pedir = document.createElement('a');
+    pedir.className = 'btn-pedir';
+    pedir.href = `https://wa.me/${data.waNumber}?text=Hola!%20Quiero%20el%20${encodeURIComponent(c.nombre)}%20🧉`;
+    pedir.target = '_blank';
+    pedir.textContent = 'Pedir';
+    footer.appendChild(pedir);
+    
+    card.appendChild(footer);
+    
+    if (c.img) {
+      img.style.display = 'block';
+      emojiBg.style.display = 'none';
+    }
+    
     grid.appendChild(card);
   });
 }
@@ -1183,13 +1270,47 @@ function renderPrecios() {
   data.precios.forEach((p, i) => {
     const item = document.createElement('div');
     item.className = 'precio-item';
-    item.innerHTML = `
-      <button class="btn-delete-precio" onclick="deletePrecio(${i})" title="Eliminar">✕</button>
-      <input type="text" class="precio-emoji editable-field" value="${p.emoji}" data-field="emoji" data-index="${i}" maxlength="4">
-      <input type="text" class="precio-nombre editable-field" value="${p.nombre}" data-field="nombre" data-index="${i}">
-      <input type="text" class="precio-desc editable-field" value="${p.desc}" data-field="desc" data-index="${i}">
-      <input type="text" class="precio-monto editable-field" value="${p.monto}" data-field="monto" data-index="${i}">
-    `;
+    
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn-delete-precio';
+    deleteBtn.title = 'Eliminar';
+    deleteBtn.textContent = '✕';
+    deleteBtn.setAttribute('onclick', `deletePrecio(${i})`);
+    item.appendChild(deleteBtn);
+    
+    const emojiInput = document.createElement('input');
+    emojiInput.type = 'text';
+    emojiInput.className = 'precio-emoji editable-field';
+    emojiInput.value = p.emoji;
+    emojiInput.maxLength = 4;
+    emojiInput.setAttribute('data-field', 'emoji');
+    emojiInput.setAttribute('data-index', i);
+    item.appendChild(emojiInput);
+    
+    const nombreInput = document.createElement('input');
+    nombreInput.type = 'text';
+    nombreInput.className = 'precio-nombre editable-field';
+    nombreInput.value = p.nombre;
+    nombreInput.setAttribute('data-field', 'nombre');
+    nombreInput.setAttribute('data-index', i);
+    item.appendChild(nombreInput);
+    
+    const descInput = document.createElement('input');
+    descInput.type = 'text';
+    descInput.className = 'precio-desc editable-field';
+    descInput.value = p.desc;
+    descInput.setAttribute('data-field', 'desc');
+    descInput.setAttribute('data-index', i);
+    item.appendChild(descInput);
+    
+    const montoInput = document.createElement('input');
+    montoInput.type = 'text';
+    montoInput.className = 'precio-monto editable-field';
+    montoInput.value = p.monto;
+    montoInput.setAttribute('data-field', 'monto');
+    montoInput.setAttribute('data-index', i);
+    item.appendChild(montoInput);
+    
     grid.appendChild(item);
   });
 }
