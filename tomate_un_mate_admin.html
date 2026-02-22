@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tomate un Mate 🧉</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ========== VARIABLES ========== */
+:root {
+  --verde: #3d6b3d;
+  --verde-claro: #5a9e5a;
+  --verde-oscuro: #2a4d2a;
+  --crema: #f5efe6;
+  --marron: #7a4e2d;
+  --marron-claro: #c49a6c;
+  --dorado: #d4a843;
+  --dorado-hover: #e6b94e;
+  --texto: #2b1f14;
+  --blanco: #fdfaf6;
+  --admin-accent: #f97316;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--crema);
+  color: var(--texto);
+  overflow-x: hidden;
+}
+
+/* ========== ADMIN BAR ========== */
+#admin-bar {
+  background: #1a1a1a;
+  color: white;
+  padding: 0 1.5rem;
+  height: 48px;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  font-size: 0.85rem;
+  border-bottom: 2px solid var(--admin-accent);
+}
+
+#admin-bar.visible { display: flex; }
+
+.admin-bar-left { display: flex; align-items: center; gap: 1rem; }
+.admin-indicator { 
+  background: var(--admin-accent); 
+  color: white; 
+  padding: 0.2rem 0.7rem; 
+  border-radius: 50px; 
+  font-size: 0.75rem; 
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+.admin-bar-right { display: flex; gap: 0.8rem; }
+
+.admin-btn {
+  padding: 0.35rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+
+.admin-btn-add { background: var(--verde-claro); color: white; }
+.admin-btn-add:hover { background: var(--verde); }
+.admin-btn-save { background: var(--admin-accent); color: white; }
+.admin-btn-save:hover { background: #ea6c00; }
+.admin-btn-exit { background: #444; color: white; }
+.admin-btn-exit:hover { background: #666; }
+
+/* ========== HEADER ========== */
+header {
+  background: var(--verde);
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.25);
+  transition: top 0.3s;
+}
+
+header.with-admin { top: 48px; }
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  color: var(--crema);
+  font-size: 1.5rem;
+}
+.logo span { color: var(--dorado); }
+
+nav a {
+  color: var(--crema);
+  text-decoration: none;
+  margin-left: 1.5rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+nav a:hover { opacity: 1; }
+
+/* ========== HERO ========== */
+.hero {
+  background: linear-gradient(135deg, var(--verde) 0%, var(--verde-oscuro) 55%, var(--marron) 100%);
+  min-height: 88vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding: 4rem 2rem;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.04) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(212,168,67,0.08) 0%, transparent 40%);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.025'%3E%3Ccircle cx='20' cy='20' r='1.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+.hero-content { position: relative; z-index: 1; max-width: 680px; }
+
+.hero-emoji {
+  font-size: 5rem;
+  display: block;
+  margin-bottom: 1rem;
+  animation: float 3.5s ease-in-out infinite;
+  filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-14px) rotate(2deg); }
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.5rem, 6vw, 4.2rem);
+  color: var(--crema);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+.hero h1 em { color: var(--dorado); font-style: italic; }
+
+.hero p {
+  color: rgba(245,239,230,0.8);
+  font-size: 1.1rem;
+  margin-bottom: 2.5rem;
+  line-height: 1.75;
+}
+
+.hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+.btn {
+  padding: 0.85rem 2.2rem;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: all 0.25s;
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btn-primary { background: var(--dorado); color: var(--texto); }
+.btn-primary:hover { background: var(--dorado-hover); transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212,168,67,0.4); }
+
+.btn-outline { background: transparent; color: var(--crema); border: 2px solid rgba(245,239,230,0.4); }
+.btn-outline:hover { border-color: var(--crema); transform: translateY(-2px); }
+
+/* ========== SECTIONS ========== */
+section { padding: 5rem 2rem; }
+
+.section-title { text-align: center; margin-bottom: 3rem; }
+
+.section-title h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  color: var(--verde);
+  margin-bottom: 0.5rem;
+}
+.section-title p { color: var(--marron); font-size: 0.95rem; }
+
+.tag {
+  display: inline-block;
+  background: var(--dorado);
+  color: var(--texto);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.8rem;
+  border-radius: 50px;
+  margin-bottom: 0.8rem;
+}
+
+/* ========== COMBO CARDS ========== */
+.combos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.combo-card {
+  background: var(--blanco);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+}
+
+.combo-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.14);
+}
+
+/* Admin mode card highlight */
+body.admin-mode .combo-card {
+  outline: 2px dashed transparent;
+  transition: transform 0.3s, box-shadow 0.3s, outline 0.2s;
+}
+body.admin-mode .combo-card:hover {
+  outline: 2px dashed var(--admin-accent);
+  transform: none;
+}
+
+/* Imagen del combo */
+.combo-img-wrapper {
+  position: relative;
+  height: 210px;
+  overflow: hidden;
+  cursor: default;
+}
+
+body.admin-mode .combo-img-wrapper {
+  cursor: pointer;
+}
+
+body.admin-mode .combo-img-wrapper::after {
+  content: '📷 Cambiar foto';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+body.admin-mode .combo-img-wrapper:hover::after { opacity: 1; }
+
+.combo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+}
+
+.combo-img.loaded { display: block; }
+
+.combo-emoji-bg {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+}
+
+.combo-emoji-bg.verde { background: linear-gradient(135deg, var(--verde), var(--verde-oscuro)); }
+.combo-emoji-bg.marron { background: linear-gradient(135deg, var(--marron), #3d2010); }
+.combo-emoji-bg.dorado { background: linear-gradient(135deg, #8b6914, var(--marron)); }
+
+.badge-nuevo {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #e74c3c;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-check-wrapper {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: none;
+}
+
+body.admin-mode .badge-check-wrapper { display: block; }
+
+.badge-nuevo-toggle {
+  background: rgba(0,0,0,0.5);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 0.2rem 0.6rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.combo-body { padding: 1.5rem 1.5rem 0.5rem; }
+
+.editable-field {
+  outline: none;
+  border-radius: 6px;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+body.admin-mode .editable-field {
+  cursor: text;
+  background: rgba(249,115,22,0.07);
+  box-shadow: 0 0 0 1px rgba(249,115,22,0.25);
+  padding: 2px 6px;
+}
+
+body.admin-mode .editable-field:focus {
+  background: rgba(249,115,22,0.12);
+  box-shadow: 0 0 0 2px var(--admin-accent);
+}
+
+.combo-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  display: block;
+  width: 100%;
+}
+
+.combo-desc {
+  font-size: 0.9rem;
+  color: #6b5c4e;
+  line-height: 1.6;
+  display: block;
+  width: 100%;
+}
+
+.combo-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  margin-top: 1rem;
+}
+
+.price-wrapper { display: flex; align-items: baseline; gap: 0.3rem; }
+
+.price-symbol { 
+  font-size: 1.1rem; 
+  font-weight: 700; 
+  color: var(--verde); 
+  font-family: 'Playfair Display', serif; 
+}
+
+.price-amount {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--verde);
+  font-family: 'Playfair Display', serif;
+  min-width: 20px;
+}
+
+.price-label {
+  font-size: 0.8rem;
+  color: var(--marron-claro);
+  margin-left: 2px;
+}
+
+.btn-pedir {
+  background: var(--verde);
+  color: white;
+  border: none;
+  padding: 0.65rem 1.3rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-pedir:hover { background: var(--verde-claro); }
+
+/* Delete button (admin only) */
+.btn-delete-card {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 28px;
+  height: 28px;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 1rem;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+}
+
+.btn-delete-card:hover { transform: scale(1.15); }
+
+body.admin-mode .btn-delete-card { display: flex; }
+
+/* ========== PRECIOS ========== */
+.precios-section {
+  background: var(--verde);
+  color: var(--crema);
+}
+.precios-section .section-title h2 { color: var(--dorado); }
+.precios-section .section-title p { color: rgba(245,239,230,0.7); }
+
+.precios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  max-width: 950px;
+  margin: 0 auto;
+}
+
+.precio-item {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  position: relative;
+  transition: background 0.2s;
+}
+.precio-item:hover { background: rgba(255,255,255,0.13); }
+
+body.admin-mode .precio-item { outline: 1px dashed rgba(249,115,22,0.4); }
+body.admin-mode .precio-item:hover { outline: 1px dashed var(--admin-accent); }
+
+.precio-emoji { font-size: 2.5rem; margin-bottom: 0.8rem; display: block; }
+.precio-nombre { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 0.3rem; display: block; }
+.precio-desc { font-size: 0.82rem; opacity: 0.7; margin-bottom: 1rem; display: block; }
+.precio-monto { font-size: 2rem; font-weight: 700; color: var(--dorado); font-family: 'Playfair Display', serif; display: block; }
+
+.btn-delete-precio {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 24px;
+  height: 24px;
+  background: #dc2626;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+body.admin-mode .btn-delete-precio { display: flex; }
+
+/* ========== GALERÍA / INSTAGRAM ========== */
+.insta-section { background: var(--blanco); }
+
+.insta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto 2.5rem;
+}
+
+.insta-item {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  background: linear-gradient(135deg, var(--verde) 0%, var(--marron) 100%);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.insta-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+
+.insta-item:hover { transform: scale(1.03); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+
+body.admin-mode .insta-item::after {
+  content: '📷';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+body.admin-mode .insta-item:hover::after { opacity: 1; }
+
+.insta-add-btn {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  border: 3px dashed rgba(249,115,22,0.5);
+  background: rgba(249,115,22,0.05);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 2rem;
+  color: var(--admin-accent);
+  transition: background 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.insta-add-btn:hover { background: rgba(249,115,22,0.1); }
+body.admin-mode .insta-add-btn { display: flex; }
+
+.insta-btn { text-align: center; }
+
+/* ========== FOOTER ========== */
+footer {
+  background: var(--texto);
+  color: rgba(245,239,230,0.7);
+  text-align: center;
+  padding: 3.5rem 2rem;
+}
+
+footer .footer-logo {
+  font-family: 'Playfair Display', serif;
+  color: var(--dorado);
+  font-size: 1.9rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+footer p { font-size: 0.88rem; line-height: 2; }
+footer a { color: var(--dorado); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* Admin secret trigger */
+.footer-admin-trigger {
+  display: inline-block;
+  color: transparent;
+  cursor: default;
+  font-size: 0.5rem;
+  user-select: none;
+  padding: 0.5rem;
+}
+
+/* ========== WHATSAPP FLOAT ========== */
+.whatsapp-float {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 999;
+  width: 62px;
+  height: 62px;
+  background: #25d366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+  text-decoration: none;
+  transition: transform 0.25s, box-shadow 0.25s;
+  animation: pulse-wa 3s ease-in-out infinite;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(37,211,102,0.65);
+  animation: none;
+}
+
+@keyframes pulse-wa {
+  0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.45); }
+  50% { box-shadow: 0 4px 35px rgba(37,211,102,0.75), 0 0 0 10px rgba(37,211,102,0.12); }
+}
+
+.whatsapp-float svg { width: 33px; height: 33px; }
+
+.wa-label {
+  position: absolute;
+  right: 72px;
+  background: #1a1a1a;
+  color: white;
+  font-size: 0.82rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.whatsapp-float:hover .wa-label { opacity: 1; }
+
+/* ========== MODAL LOGIN ADMIN ========== */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: var(--blanco);
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  width: 90%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+}
+
+.modal-box h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--texto);
+}
+
+.modal-box p { font-size: 0.9rem; color: #888; margin-bottom: 1.5rem; }
+
+.modal-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 2px solid #e0d8cc;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 0.8rem;
+  outline: none;
+  transition: border-color 0.2s;
+  text-align: center;
+  letter-spacing: 0.15em;
+}
+.modal-input:focus { border-color: var(--verde); }
+.modal-input.error { border-color: #dc2626; animation: shake 0.3s; }
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  75% { transform: translateX(8px); }
+}
+
+.modal-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--verde);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background 0.2s;
+}
+.modal-btn:hover { background: var(--verde-claro); }
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #aaa;
+}
+
+/* ========== MODAL AGREGAR COMBO ========== */
+.modal-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  text-align: left;
+  margin-bottom: 1rem;
+}
+
+.modal-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--texto);
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+.modal-input-left {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid #e0d8cc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.modal-input-left:focus { border-color: var(--verde); }
+
+.modal-select {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  border: 2px solid #e0d8cc;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  background: white;
+  outline: none;
+}
+
+/* ========== TOAST ========== */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #1a1a1a;
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-family: 'DM Sans', sans-serif;
+  z-index: 99999;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.success { border-left: 4px solid #25d366; }
+.toast.info { border-left: 4px solid var(--dorado); }
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 640px) {
+  nav { display: none; }
+  .hero h1 { font-size: 2rem; }
+  .admin-bar-left span:last-child { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============ ADMIN BAR ============ -->
+<div id="admin-bar">
+  <div class="admin-bar-left">
+    <span class="admin-indicator">🛠 MODO ADMIN</span>
+    <span style="color:#aaa; font-size:0.8rem;">Hacé clic en cualquier texto o precio para editar</span>
+  </div>
+  <div class="admin-bar-right">
+    <button class="admin-btn admin-btn-add" onclick="openAddComboModal()">+ Agregar combo</button>
+    <button class="admin-btn admin-btn-add" onclick="openAddPrecioModal()" style="background:#8b6914">+ Agregar precio</button>
+    <button class="admin-btn admin-btn-save" onclick="saveData()">💾 Guardar cambios</button>
+    <button class="admin-btn admin-btn-exit" onclick="exitAdmin()">✕ Salir</button>
+  </div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header id="main-header">
+  <div class="logo">Tomate un <span>Mate</span> 🧉</div>
+  <nav>
+    <a href="#combos">Combos</a>
+    <a href="#precios">Precios</a>
+    <a href="#galeria">Fotos</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-emoji">🧉</span>
+    <h1>El mejor mate<br><em>para compartir</em></h1>
+    <p>Mates, combos y toda la energía del campo en un solo lugar. Pedí el tuyo hoy.</p>
+    <div class="hero-btns">
+      <a href="#combos" class="btn btn-primary">Ver combos</a>
+      <a id="wa-hero-btn" href="#" target="_blank" class="btn btn-outline">Pedir por WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMBOS ============ -->
+<section id="combos">
+  <div class="section-title">
+    <span class="tag">🔥 Especiales</span>
+    <h2>Nuestros Combos</h2>
+    <p>Elegí el que más te guste y pedí directo por WhatsApp</p>
+  </div>
+  <div class="combos-grid" id="combos-grid">
+    <!-- Cards injected by JS -->
+  </div>
+</section>
+
+<!-- ============ PRECIOS ============ -->
+<section class="precios-section" id="precios">
+  <div class="section-title">
+    <span class="tag">💰 Lista de precios</span>
+    <h2>Precios actualizados</h2>
+    <p>Todos nuestros productos</p>
+  </div>
+  <div class="precios-grid" id="precios-grid">
+    <!-- Injected by JS -->
+  </div>
+</section>
+
+<!-- ============ GALERÍA ============ -->
+<section class="insta-section" id="galeria">
+  <div class="section-title">
+    <span class="tag">📸 Instagram</span>
+    <h2>Nuestras fotos</h2>
+    <p>Seguinos en Instagram para ver las novedades</p>
+  </div>
+  <div class="insta-grid" id="insta-grid">
+    <!-- Injected by JS -->
+    <div class="insta-add-btn" onclick="addGalleryPhoto()" title="Agregar foto">+</div>
+  </div>
+  <div class="insta-btn">
+    <a href="https://www.instagram.com/tomate_unmate.tl/" target="_blank" class="btn btn-primary">Ver en Instagram ↗</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer id="contacto">
+  <span class="footer-logo">Tomate un Mate 🧉</span>
+  <p>📍 Trenque Lauquen, Buenos Aires</p>
+  <p>
+    <a id="wa-footer-link" href="#">WhatsApp</a> &nbsp;•&nbsp;
+    <a href="https://www.instagram.com/tomate_unmate.tl/" target="_blank">Instagram</a>
+  </p>
+  <p style="margin-top: 2rem; font-size: 0.75rem; opacity: 0.4;">© 2025 Tomate un Mate. Todos los derechos reservados.</p>
+  <!-- Secret admin trigger: click 5 times -->
+  <span class="footer-admin-trigger" id="secret-trigger" title="">·</span>
+</footer>
+
+<!-- ============ WHATSAPP FLOAT ============ -->
+<a class="whatsapp-float" id="wa-float" href="#" target="_blank" aria-label="WhatsApp">
+  <span class="wa-label">Escribinos por WhatsApp</span>
+  <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+
+<!-- ============ MODAL: LOGIN ADMIN ============ -->
+<div class="modal-overlay" id="modal-login">
+  <div class="modal-box" style="position:relative">
+    <button class="modal-close" onclick="closeModal('modal-login')">✕</button>
+    <div style="font-size:2.5rem; margin-bottom:0.8rem;">🔒</div>
+    <h3>Panel de administración</h3>
+    <p>Ingresá tu contraseña para editar la página</p>
+    <input type="password" class="modal-input" id="admin-password-input" placeholder="Contraseña" onkeydown="if(event.key==='Enter') checkPassword()">
+    <div id="pw-error" style="color:#dc2626; font-size:0.82rem; margin-bottom:0.6rem; display:none;">Contraseña incorrecta ❌</div>
+    <button class="modal-btn" onclick="checkPassword()">Entrar al panel</button>
+  </div>
+</div>
+
+<!-- ============ MODAL: AGREGAR COMBO ============ -->
+<div class="modal-overlay" id="modal-add-combo">
+  <div class="modal-box" style="position:relative; max-width:440px; text-align:left;">
+    <button class="modal-close" onclick="closeModal('modal-add-combo')">✕</button>
+    <h3 style="text-align:center; margin-bottom:1.5rem;">➕ Nuevo combo</h3>
+    <div class="modal-form-grid">
+      <div>
+        <label class="modal-label">Nombre del combo</label>
+        <input type="text" class="modal-input-left" id="nc-nombre" placeholder="Ej: Combo Invierno">
+      </div>
+      <div>
+        <label class="modal-label">Descripción</label>
+        <input type="text" class="modal-input-left" id="nc-desc" placeholder="Ej: Mate + bombilla + yerba premium">
+      </div>
+      <div>
+        <label class="modal-label">Precio (en $)</label>
+        <input type="number" class="modal-input-left" id="nc-precio" placeholder="Ej: 5000">
+      </div>
+      <div>
+        <label class="modal-label">Unidad de venta</label>
+        <input type="text" class="modal-input-left" id="nc-unidad" placeholder="Ej: / combo, / unidad, / kit">
+      </div>
+      <div>
+        <label class="modal-label">Color de fondo</label>
+        <select class="modal-select" id="nc-color">
+          <option value="verde">🟢 Verde</option>
+          <option value="marron">🟤 Marrón</option>
+          <option value="dorado">🟡 Dorado</option>
+        </select>
+      </div>
+      <div>
+        <label class="modal-label">Emoji decorativo</label>
+        <input type="text" class="modal-input-left" id="nc-emoji" placeholder="🧉" maxlength="4">
+      </div>
+      <div>
+        <label class="modal-label">¿Marcar como "Nuevo"?</label>
+        <select class="modal-select" id="nc-nuevo">
+          <option value="0">No</option>
+          <option value="1">Sí</option>
+        </select>
+      </div>
+    </div>
+    <button class="modal-btn" onclick="addCombo()">Agregar combo</button>
+  </div>
+</div>
+
+<!-- ============ MODAL: AGREGAR PRECIO ============ -->
+<div class="modal-overlay" id="modal-add-precio">
+  <div class="modal-box" style="position:relative; max-width:400px; text-align:left;">
+    <button class="modal-close" onclick="closeModal('modal-add-precio')">✕</button>
+    <h3 style="text-align:center; margin-bottom:1.5rem;">➕ Nuevo precio</h3>
+    <div class="modal-form-grid">
+      <div>
+        <label class="modal-label">Emoji</label>
+        <input type="text" class="modal-input-left" id="np-emoji" placeholder="🧉" maxlength="4">
+      </div>
+      <div>
+        <label class="modal-label">Nombre del producto</label>
+        <input type="text" class="modal-input-left" id="np-nombre" placeholder="Ej: Mate solo">
+      </div>
+      <div>
+        <label class="modal-label">Descripción corta</label>
+        <input type="text" class="modal-input-left" id="np-desc" placeholder="Ej: Artesanal">
+      </div>
+      <div>
+        <label class="modal-label">Precio (en $)</label>
+        <input type="number" class="modal-input-left" id="np-precio" placeholder="Ej: 2000">
+      </div>
+    </div>
+    <button class="modal-btn" onclick="addPrecio()">Agregar producto</button>
+  </div>
+</div>
+
+<!-- ============ MODAL: WA CONFIG ============ -->
+<div class="modal-overlay" id="modal-wa">
+  <div class="modal-box" style="position:relative; max-width:420px;">
+    <button class="modal-close" onclick="closeModal('modal-wa')">✕</button>
+    <div style="font-size:2rem; margin-bottom:0.5rem;">📱</div>
+    <h3>Configurar WhatsApp</h3>
+    <p>Ingresá tu número para que los clientes te contacten directo</p>
+    <input type="tel" class="modal-input" id="wa-number-input" placeholder="Ej: 5492355123456" style="letter-spacing:0.05em">
+    <p style="font-size:0.75rem; color:#aaa; margin-bottom:1rem;">Formato: código país + código área + número. Sin +, sin 0, sin 15. <br>Ej para Argentina Trenque Lauquen: 5492355123456</p>
+    <button class="modal-btn" onclick="saveWaNumber()">Guardar número</button>
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast"></div>
+
+<!-- ============ INPUT FILE (oculto) ============ -->
+<input type="file" id="hidden-file-input" accept="image/*" style="display:none">
+
+<script>
+// ====================================
+// DATA & CONFIG
+// ====================================
+const ADMIN_PASSWORD = 'mate2025'; // ← Cambiá esta contraseña
+
+let isAdmin = false;
+let editingImgTarget = null; // { type: 'combo'|'gallery', index }
+
+// Datos default
+const defaultData = {
+  waNumber: '5492355555555',
+  combos: [
+    { nombre: 'Combo Básico', desc: 'Mate + yerba + bombilla. Todo lo que necesitás para empezar el día con energía.', precio: '3.500', unidad: '/ unidad', color: 'verde', emoji: '🧉', nuevo: false, img: null },
+    { nombre: 'Combo Premium', desc: 'Mate artesanal + yerba premium + bombilla de acero inoxidable + funda protectora.', precio: '6.800', unidad: '/ combo', color: 'marron', emoji: '🧉✨', nuevo: true, img: null },
+    { nombre: 'Combo Regalo', desc: 'Presentación especial para regalo. Incluye mate, yerba seleccionada, bombilla y caja decorada.', precio: '9.500', unidad: '/ kit', color: 'dorado', emoji: '🎁', nuevo: false, img: null },
+  ],
+  precios: [
+    { emoji: '🧉', nombre: 'Mate solo', desc: 'Mate artesanal', monto: '$2.000' },
+    { emoji: '💨', nombre: 'Bombilla', desc: 'Acero inoxidable', monto: '$1.800' },
+    { emoji: '🌿', nombre: 'Yerba 500g', desc: 'Yerba seleccionada', monto: '$1.200' },
+    { emoji: '🛍️', nombre: 'Funda', desc: 'Protección para mate', monto: '$1.500' },
+  ],
+  gallery: ['🧉','🌿','🎁','☀️','🤝','✨'],
+  galleryImgs: [null, null, null, null, null, null],
+};
+
+let data = JSON.parse(JSON.stringify(defaultData));
+
+// ====================================
+// LOAD / SAVE
+// ====================================
+function loadData() {
+  try {
+    const saved = localStorage.getItem('tomate_mate_data');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      data = { ...defaultData, ...parsed };
+      // ensure arrays have same length
+      while (data.galleryImgs.length < data.gallery.length) data.galleryImgs.push(null);
+    }
+  } catch(e) {}
+}
+
+function saveData() {
+  // Collect editable fields from DOM before saving
+  collectEditableFields();
+  try {
+    localStorage.setItem('tomate_mate_data', JSON.stringify(data));
+    showToast('✅ Cambios guardados correctamente', 'success');
+  } catch(e) {
+    showToast('❌ Error al guardar', 'info');
+  }
+}
+
+function collectEditableFields() {
+  // Combos
+  document.querySelectorAll('.combo-card').forEach((card, i) => {
+    if (!data.combos[i]) return;
+    const titleEl = card.querySelector('.combo-title');
+    const descEl = card.querySelector('.combo-desc');
+    const priceEl = card.querySelector('.price-amount');
+    const unitEl = card.querySelector('.price-label');
+    if (titleEl) data.combos[i].nombre = titleEl.innerText.trim();
+    if (descEl) data.combos[i].desc = descEl.innerText.trim();
+    if (priceEl) data.combos[i].precio = priceEl.innerText.trim();
+    if (unitEl) data.combos[i].unidad = unitEl.innerText.trim();
+  });
+
+  // Precios
+  document.querySelectorAll('.precio-item').forEach((item, i) => {
+    if (!data.precios[i]) return;
+    const emojiEl = item.querySelector('.precio-emoji');
+    const nombreEl = item.querySelector('.precio-nombre');
+    const descEl = item.querySelector('.precio-desc');
+    const montoEl = item.querySelector('.precio-monto');
+    if (emojiEl) data.precios[i].emoji = emojiEl.innerText.trim();
+    if (nombreEl) data.precios[i].nombre = nombreEl.innerText.trim();
+    if (descEl) data.precios[i].desc = descEl.innerText.trim();
+    if (montoEl) data.precios[i].monto = montoEl.innerText.trim();
+  });
+}
+
+// ====================================
+// RENDER
+// ====================================
+function renderAll() {
+  renderCombos();
+  renderPrecios();
+  renderGallery();
+  updateWaLinks();
+}
+
+function renderCombos() {
+  const grid = document.getElementById('combos-grid');
+  grid.innerHTML = '';
+  data.combos.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'combo-card';
+    card.innerHTML = `
+      <button class="btn-delete-card" onclick="deleteCombo(${i})" title="Eliminar combo">✕</button>
+      <div class="combo-img-wrapper" onclick="triggerImgUpload('combo', ${i})">
+        <img class="combo-img${c.img ? ' loaded' : ''}" src="${c.img || ''}" alt="${c.nombre}">
+        <div class="combo-emoji-bg ${c.color}">${c.emoji}</div>
+        <div class="badge-check-wrapper">
+          <button class="badge-nuevo-toggle" onclick="event.stopPropagation(); toggleNuevo(${i})">${c.nuevo ? '✅ Nuevo' : '+ Nuevo'}</button>
+        </div>
+        ${c.nuevo ? '<div class="badge-nuevo">Nuevo</div>' : ''}
+      </div>
+      <div class="combo-body">
+        <span class="combo-title editable-field" contenteditable="${isAdmin}" spellcheck="false">${c.nombre}</span>
+        <span class="combo-desc editable-field" contenteditable="${isAdmin}" spellcheck="false" style="margin-top:0.4rem">${c.desc}</span>
+      </div>
+      <div class="combo-footer">
+        <div class="price-wrapper">
+          <span class="price-symbol">$</span>
+          <span class="price-amount editable-field" contenteditable="${isAdmin}" spellcheck="false">${c.precio}</span>
+          <span class="price-label editable-field" contenteditable="${isAdmin}" spellcheck="false">${c.unidad}</span>
+        </div>
+        <a class="btn-pedir" href="https://wa.me/${data.waNumber}?text=Hola!%20Quiero%20el%20${encodeURIComponent(c.nombre)}%20🧉" target="_blank">Pedir</a>
+      </div>
+    `;
+    // If has image, show it properly
+    if (c.img) {
+      const imgEl = card.querySelector('.combo-img');
+      const bgEl = card.querySelector('.combo-emoji-bg');
+      imgEl.style.display = 'block';
+      bgEl.style.display = 'none';
+    }
+    grid.appendChild(card);
+  });
+}
+
+function renderPrecios() {
+  const grid = document.getElementById('precios-grid');
+  grid.innerHTML = '';
+  data.precios.forEach((p, i) => {
+    const item = document.createElement('div');
+    item.className = 'precio-item';
+    item.innerHTML = `
+      <button class="btn-delete-precio" onclick="deletePrecio(${i})" title="Eliminar">✕</button>
+      <span class="precio-emoji editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.emoji}</span>
+      <span class="precio-nombre editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.nombre}</span>
+      <span class="precio-desc editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.desc}</span>
+      <span class="precio-monto editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.monto}</span>
+    `;
+    grid.appendChild(item);
+  });
+}
+
+function renderGallery() {
+  const grid = document.getElementById('insta-grid');
+  const addBtn = grid.querySelector('.insta-add-btn');
+  // Remove all items except the add btn
+  Array.from(grid.children).forEach(c => { if (!c.classList.contains('insta-add-btn')) c.remove(); });
+
+  data.gallery.forEach((g, i) => {
+    const item = document.createElement('div');
+    item.className = 'insta-item';
+    item.style.cssText += data.gallery.length > 1 && i % 2 === 1 ? 'background:linear-gradient(135deg,var(--marron) 0%,#3d2010 100%)' : '';
+    if (data.galleryImgs[i]) {
+      item.innerHTML = `<img src="${data.galleryImgs[i]}" alt="Foto ${i+1}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">`;
+      item.textContent = '';
+      const img = document.createElement('img');
+      img.src = data.galleryImgs[i];
+      img.alt = `Foto ${i+1}`;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0';
+      item.appendChild(img);
+    } else {
+      item.textContent = g;
+    }
+    item.onclick = () => { if (isAdmin) triggerImgUpload('gallery', i); };
+    grid.insertBefore(item, addBtn);
+  });
+}
+
+function updateWaLinks() {
+  const waUrl = `https://wa.me/${data.waNumber}?text=Hola!%20Vi%20tu%20p%C3%A1gina%20y%20quiero%20hacer%20un%20pedido%20🧉`;
+  document.getElementById('wa-float').href = waUrl;
+  document.getElementById('wa-hero-btn').href = waUrl;
+  document.getElementById('wa-footer-link').href = `https://wa.me/${data.waNumber}`;
+}
+
+// ====================================
+// ADMIN AUTH
+// ====================================
+function checkPassword() {
+  const input = document.getElementById('admin-password-input');
+  const pw = input.value;
+  if (pw === ADMIN_PASSWORD) {
+    closeModal('modal-login');
+    enterAdmin();
+    input.value = '';
+    document.getElementById('pw-error').style.display = 'none';
+  } else {
+    input.classList.add('error');
+    document.getElementById('pw-error').style.display = 'block';
+    setTimeout(() => input.classList.remove('error'), 400);
+  }
+}
+
+function enterAdmin() {
+  isAdmin = true;
+  document.body.classList.add('admin-mode');
+  document.getElementById('admin-bar').classList.add('visible');
+  document.getElementById('main-header').classList.add('with-admin');
+  renderAll();
+  showToast('🛠 Modo edición activado — hacé clic en cualquier texto para editar', 'info');
+
+  // Show WA config if number is default
+  if (data.waNumber === '5492355555555') {
+    setTimeout(() => openWaModal(), 800);
+  }
+}
+
+function exitAdmin() {
+  collectEditableFields();
+  isAdmin = false;
+  document.body.classList.remove('admin-mode');
+  document.getElementById('admin-bar').classList.remove('visible');
+  document.getElementById('main-header').classList.remove('with-admin');
+  renderAll();
+  showToast('👁 Vista del público activada', 'info');
+}
+
+// ====================================
+// SECRET TRIGGER (5 clicks en footer)
+// ====================================
+let clickCount = 0;
+let clickTimer;
+document.getElementById('secret-trigger').addEventListener('click', () => {
+  clickCount++;
+  clearTimeout(clickTimer);
+  clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
+  if (clickCount >= 5) {
+    clickCount = 0;
+    if (!isAdmin) openModal('modal-login');
+  }
+});
+
+// ====================================
+// MODALS
+// ====================================
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+function openAddComboModal() { openModal('modal-add-combo'); }
+function openAddPrecioModal() { openModal('modal-add-precio'); }
+function openWaModal() { 
+  document.getElementById('wa-number-input').value = data.waNumber;
+  openModal('modal-wa'); 
+}
+
+// Click outside modal to close
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// ====================================
+// CRUD OPERATIONS
+// ====================================
+function addCombo() {
+  const nombre = document.getElementById('nc-nombre').value.trim();
+  const desc = document.getElementById('nc-desc').value.trim();
+  const precio = document.getElementById('nc-precio').value.trim();
+  const unidad = document.getElementById('nc-unidad').value.trim() || '/ unidad';
+  const color = document.getElementById('nc-color').value;
+  const emoji = document.getElementById('nc-emoji').value.trim() || '🧉';
+  const nuevo = document.getElementById('nc-nuevo').value === '1';
+
+  if (!nombre || !precio) {
+    showToast('⚠️ Completá nombre y precio', 'info');
+    return;
+  }
+
+  data.combos.push({ nombre, desc, precio, unidad, color, emoji, nuevo, img: null });
+  closeModal('modal-add-combo');
+  renderCombos();
+  showToast('✅ Combo agregado', 'success');
+
+  // Clear form
+  ['nc-nombre','nc-desc','nc-precio','nc-unidad','nc-emoji'].forEach(id => document.getElementById(id).value = '');
+}
+
+function deleteCombo(i) {
+  if (!confirm(`¿Eliminar el combo "${data.combos[i].nombre}"?`)) return;
+  data.combos.splice(i, 1);
+  renderCombos();
+  showToast('🗑 Combo eliminado', 'info');
+}
+
+function toggleNuevo(i) {
+  data.combos[i].nuevo = !data.combos[i].nuevo;
+  renderCombos();
+}
+
+function addPrecio() {
+  const emoji = document.getElementById('np-emoji').value.trim() || '🧉';
+  const nombre = document.getElementById('np-nombre').value.trim();
+  const desc = document.getElementById('np-desc').value.trim();
+  const precio = document.getElementById('np-precio').value.trim();
+
+  if (!nombre || !precio) {
+    showToast('⚠️ Completá nombre y precio', 'info');
+    return;
+  }
+
+  data.precios.push({ emoji, nombre, desc, monto: '$' + Number(precio).toLocaleString('es-AR') });
+  closeModal('modal-add-precio');
+  renderPrecios();
+  showToast('✅ Precio agregado', 'success');
+  ['np-emoji','np-nombre','np-desc','np-precio'].forEach(id => document.getElementById(id).value = '');
+}
+
+function deletePrecio(i) {
+  if (!confirm(`¿Eliminar "${data.precios[i].nombre}"?`)) return;
+  data.precios.splice(i, 1);
+  renderPrecios();
+  showToast('🗑 Precio eliminado', 'info');
+}
+
+function addGalleryPhoto() {
+  editingImgTarget = { type: 'gallery-new' };
+  document.getElementById('hidden-file-input').click();
+}
+
+function saveWaNumber() {
+  const num = document.getElementById('wa-number-input').value.trim().replace(/\D/g, '');
+  if (num.length < 10) {
+    showToast('⚠️ Número muy corto. Incluí código de país', 'info');
+    return;
+  }
+  data.waNumber = num;
+  closeModal('modal-wa');
+  updateWaLinks();
+  renderCombos(); // update pedir links
+  showToast('✅ Número de WhatsApp guardado', 'success');
+}
+
+// ====================================
+// IMAGE UPLOAD
+// ====================================
+function triggerImgUpload(type, index) {
+  if (!isAdmin) return;
+  editingImgTarget = { type, index };
+  document.getElementById('hidden-file-input').click();
+}
+
+document.getElementById('hidden-file-input').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    if (!editingImgTarget) return;
+
+    if (editingImgTarget.type === 'combo') {
+      data.combos[editingImgTarget.index].img = dataUrl;
+      renderCombos();
+      showToast('📸 Foto del combo actualizada', 'success');
+    } else if (editingImgTarget.type === 'gallery') {
+      data.galleryImgs[editingImgTarget.index] = dataUrl;
+      renderGallery();
+      showToast('📸 Foto de galería actualizada', 'success');
+    } else if (editingImgTarget.type === 'gallery-new') {
+      data.gallery.push('📷');
+      data.galleryImgs.push(dataUrl);
+      renderGallery();
+      showToast('📸 Foto agregada a la galería', 'success');
+    }
+    editingImgTarget = null;
+  };
+  reader.readAsDataURL(file);
+  this.value = '';
+});
+
+// ====================================
+// TOAST
+// ====================================
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.className = `toast ${type}`;
+  t.innerHTML = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ====================================
+// KEYBOARD SHORTCUT
+// ====================================
+// Ctrl+Shift+A → open admin login
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+    if (!isAdmin) openModal('modal-login');
+    else exitAdmin();
+  }
+});
+
+// ====================================
+// INIT
+// ====================================
+
+// Forzar modo admin al cargar para pruebas
+loadData();
+isAdmin = true;
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.classList.add('admin-mode');
+  document.getElementById('admin-bar').classList.add('visible');
+  document.getElementById('main-header').classList.add('with-admin');
+  renderAll();
+});
+
+// Prompt WA config on first visit
+if (!localStorage.getItem('tomate_mate_data')) {
+  setTimeout(() => {
+    if (!isAdmin) openModal('modal-login');
+  }, 1500);
+}
+</script>
+</body>
+</html>
