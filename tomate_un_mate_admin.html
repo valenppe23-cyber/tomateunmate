@@ -347,18 +347,18 @@ body.admin-mode .badge-check-wrapper { display: block; }
   outline: none;
   border-radius: 6px;
   transition: background 0.15s, box-shadow 0.15s;
+  font-family: 'DM Sans', sans-serif;
 }
 
 body.admin-mode .editable-field {
   cursor: text;
-  background: rgba(249,115,22,0.07);
-  box-shadow: 0 0 0 1px rgba(249,115,22,0.25);
-  padding: 2px 6px;
+  background: rgba(249,115,22,0.07) !important;
+  box-shadow: 0 0 0 1px rgba(249,115,22,0.25) !important;
 }
 
 body.admin-mode .editable-field:focus {
-  background: rgba(249,115,22,0.12);
-  box-shadow: 0 0 0 2px var(--admin-accent);
+  background: rgba(249,115,22,0.12) !important;
+  box-shadow: 0 0 0 2px var(--admin-accent) !important;
 }
 
 .combo-title {
@@ -1070,10 +1070,10 @@ function collectEditableFields() {
     const descEl = card.querySelector('.combo-desc');
     const priceEl = card.querySelector('.price-amount');
     const unitEl = card.querySelector('.price-label');
-    if (titleEl) data.combos[i].nombre = titleEl.innerText.trim();
-    if (descEl) data.combos[i].desc = descEl.innerText.trim();
-    if (priceEl) data.combos[i].precio = priceEl.innerText.trim();
-    if (unitEl) data.combos[i].unidad = unitEl.innerText.trim();
+    if (titleEl) data.combos[i].nombre = titleEl.value.trim();
+    if (descEl) data.combos[i].desc = descEl.value.trim();
+    if (priceEl) data.combos[i].precio = priceEl.value.trim();
+    if (unitEl) data.combos[i].unidad = unitEl.value.trim();
   });
 
   // Precios
@@ -1083,10 +1083,10 @@ function collectEditableFields() {
     const nombreEl = item.querySelector('.precio-nombre');
     const descEl = item.querySelector('.precio-desc');
     const montoEl = item.querySelector('.precio-monto');
-    if (emojiEl) data.precios[i].emoji = emojiEl.innerText.trim();
-    if (nombreEl) data.precios[i].nombre = nombreEl.innerText.trim();
-    if (descEl) data.precios[i].desc = descEl.innerText.trim();
-    if (montoEl) data.precios[i].monto = montoEl.innerText.trim();
+    if (emojiEl) data.precios[i].emoji = emojiEl.value.trim();
+    if (nombreEl) data.precios[i].nombre = nombreEl.value.trim();
+    if (descEl) data.precios[i].desc = descEl.value.trim();
+    if (montoEl) data.precios[i].monto = montoEl.value.trim();
   });
 }
 
@@ -1117,14 +1117,14 @@ function renderCombos() {
         ${c.nuevo ? '<div class="badge-nuevo">Nuevo</div>' : ''}
       </div>
       <div class="combo-body">
-        <span class="combo-title editable-field" contenteditable="true" spellcheck="false">${c.nombre}</span>
-        <span class="combo-desc editable-field" contenteditable="true" spellcheck="false" style="margin-top:0.4rem">${c.desc}</span>
+        <input type="text" class="combo-title editable-field" value="${c.nombre}" data-field="nombre" data-index="${i}" style="width:100%;border:none;background:transparent;font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:0.5rem;padding:2px 6px;font-weight:bold;color:var(--texto)">
+        <input type="text" class="combo-desc editable-field" value="${c.desc}" data-field="desc" data-index="${i}" style="width:100%;border:none;background:transparent;font-size:0.9rem;margin-top:0.4rem;padding:2px 6px;color:var(--texto)">
       </div>
       <div class="combo-footer">
         <div class="price-wrapper">
           <span class="price-symbol">$</span>
-          <span class="price-amount editable-field" contenteditable="true" spellcheck="false">${c.precio}</span>
-          <span class="price-label editable-field" contenteditable="true" spellcheck="false">${c.unidad}</span>
+          <input type="text" class="price-amount editable-field" value="${c.precio}" data-field="precio" data-index="${i}" style="width:60px;border:none;background:transparent;font-weight:bold;color:var(--admin-accent);padding:2px 6px">
+          <input type="text" class="price-label editable-field" value="${c.unidad}" data-field="unidad" data-index="${i}" style="border:none;background:transparent;font-size:0.85rem;color:var(--texto);padding:2px 6px">
         </div>
         <a class="btn-pedir" href="https://wa.me/${data.waNumber}?text=Hola!%20Quiero%20el%20${encodeURIComponent(c.nombre)}%20🧉" target="_blank">Pedir</a>
       </div>
@@ -1148,10 +1148,10 @@ function renderPrecios() {
     item.className = 'precio-item';
     item.innerHTML = `
       <button class="btn-delete-precio" onclick="deletePrecio(${i})" title="Eliminar">✕</button>
-      <span class="precio-emoji editable-field" contenteditable="true" spellcheck="false">${p.emoji}</span>
-      <span class="precio-nombre editable-field" contenteditable="true" spellcheck="false">${p.nombre}</span>
-      <span class="precio-desc editable-field" contenteditable="true" spellcheck="false">${p.desc}</span>
-      <span class="precio-monto editable-field" contenteditable="true" spellcheck="false">${p.monto}</span>
+      <input type="text" class="precio-emoji editable-field" value="${p.emoji}" data-field="emoji" data-index="${i}" maxlength="4" style="width:40px;border:none;background:transparent;font-size:1.2rem;text-align:center;padding:2px 6px;">
+      <input type="text" class="precio-nombre editable-field" value="${p.nombre}" data-field="nombre" data-index="${i}" style="flex:1;border:none;background:transparent;padding:2px 6px;font-weight:600;color:var(--texto)">
+      <input type="text" class="precio-desc editable-field" value="${p.desc}" data-field="desc" data-index="${i}" style="flex:2;border:none;background:transparent;padding:2px 6px;color:#666;font-size:0.9rem">
+      <input type="text" class="precio-monto editable-field" value="${p.monto}" data-field="monto" data-index="${i}" style="width:90px;border:none;background:transparent;text-align:right;font-weight:600;color:var(--admin-accent);padding:2px 6px">
     `;
     grid.appendChild(item);
   });
