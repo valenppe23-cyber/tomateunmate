@@ -1117,14 +1117,14 @@ function renderCombos() {
         ${c.nuevo ? '<div class="badge-nuevo">Nuevo</div>' : ''}
       </div>
       <div class="combo-body">
-        <span class="combo-title editable-field" contenteditable="${isAdmin}" spellcheck="false">${c.nombre}</span>
-        <span class="combo-desc editable-field" contenteditable="${isAdmin}" spellcheck="false" style="margin-top:0.4rem">${c.desc}</span>
+        <span class="combo-title editable-field" contenteditable="true" spellcheck="false">${c.nombre}</span>
+        <span class="combo-desc editable-field" contenteditable="true" spellcheck="false" style="margin-top:0.4rem">${c.desc}</span>
       </div>
       <div class="combo-footer">
         <div class="price-wrapper">
           <span class="price-symbol">$</span>
-          <span class="price-amount editable-field" contenteditable="${isAdmin}" spellcheck="false">${c.precio}</span>
-          <span class="price-label editable-field" contenteditable="${isAdmin}" spellcheck="false">${c.unidad}</span>
+          <span class="price-amount editable-field" contenteditable="true" spellcheck="false">${c.precio}</span>
+          <span class="price-label editable-field" contenteditable="true" spellcheck="false">${c.unidad}</span>
         </div>
         <a class="btn-pedir" href="https://wa.me/${data.waNumber}?text=Hola!%20Quiero%20el%20${encodeURIComponent(c.nombre)}%20🧉" target="_blank">Pedir</a>
       </div>
@@ -1148,10 +1148,10 @@ function renderPrecios() {
     item.className = 'precio-item';
     item.innerHTML = `
       <button class="btn-delete-precio" onclick="deletePrecio(${i})" title="Eliminar">✕</button>
-      <span class="precio-emoji editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.emoji}</span>
-      <span class="precio-nombre editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.nombre}</span>
-      <span class="precio-desc editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.desc}</span>
-      <span class="precio-monto editable-field" contenteditable="${isAdmin}" spellcheck="false">${p.monto}</span>
+      <span class="precio-emoji editable-field" contenteditable="true" spellcheck="false">${p.emoji}</span>
+      <span class="precio-nombre editable-field" contenteditable="true" spellcheck="false">${p.nombre}</span>
+      <span class="precio-desc editable-field" contenteditable="true" spellcheck="false">${p.desc}</span>
+      <span class="precio-monto editable-field" contenteditable="true" spellcheck="false">${p.monto}</span>
     `;
     grid.appendChild(item);
   });
